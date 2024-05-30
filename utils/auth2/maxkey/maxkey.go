@@ -111,13 +111,13 @@ func (d *MaxkeyClient) SetAccessToken(token auth2.IAccessToken) {
 
 func (d *MaxkeyClient) BuildURL(callback string, _ bool) string {
 	v := url.Values{}
-	v.Set("redirect_uri", callback)
 	v.Set("response_type", "code")
 	v.Set("client_id", d.ClientId)
-	v.Set("scope", "openid")
+	v.Set("scope", "read write")
 	v.Set("state", callbackState)
 	v.Set("prompt", "auto")
-	return d.Endpoint + AuthorizeUrl + v.Encode()
+	v.Set("redirect_uri", d.RedirectUri)
+	return d.Endpoint + AuthorizeUrl + "?" + v.Encode()
 }
 
 func (d *MaxkeyClient) ValidateCallback(state string) error {
@@ -133,9 +133,8 @@ func (d *MaxkeyClient) getUserAccessToken(ctx context.Context, code string) (Use
 	v.Set("clientSecret", d.ClientSecret)
 	v.Set("code", code)
 	v.Set("grantType", "authorization_code")
-	v.Set("redirect_uri", d.RedirectUri)
 
-	endpoint := d.Endpoint + TokenUrl + v.Encode()
+	endpoint := d.Endpoint + TokenUrl + "?" + v.Encode()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
 	var token UserAccessToken
 	if err := auth2.Request(req, &token); err != nil {
