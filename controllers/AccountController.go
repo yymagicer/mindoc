@@ -7,6 +7,7 @@ import (
 	"github.com/mindoc-org/mindoc/cache"
 	"github.com/mindoc-org/mindoc/utils/auth2"
 	"github.com/mindoc-org/mindoc/utils/auth2/dingtalk"
+	"github.com/mindoc-org/mindoc/utils/auth2/maxkey"
 	"github.com/mindoc-org/mindoc/utils/auth2/wecom"
 	"html/template"
 	"math/rand"
@@ -61,6 +62,7 @@ func (c *AccountController) Prepare() {
 	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
 	c.Data["CanLoginWorkWeixin"] = len(web.AppConfig.DefaultString("workweixin_corpid", "")) > 0
 	c.Data["CanLoginDingTalk"] = len(web.AppConfig.DefaultString("dingtalk_app_key", "")) > 0
+	c.Data["CanLoginMaxKey"] = web.AppConfig.DefaultBool("maxkey_enable", false)
 
 	if !c.EnableXSRF {
 		return
@@ -176,12 +178,17 @@ func (c *AccountController) Login() {
 	c.Data["url"] = referer
 
 	auth2Redirect := "AccountController.Auth2Redirect"
-	if can, _ := c.Data["CanLoginWorkWeixin"].(bool); can {
-		c.Data["workweixin_login_url"] = conf.URLFor(auth2Redirect, ":app", wecom.AppName, "url", url.PathEscape(u))
-	}
-
-	if can, _ := c.Data["CanLoginDingTalk"].(bool); can {
-		c.Data["dingtalk_login_url"] = conf.URLFor(auth2Redirect, ":app", dingtalk.AppName, "url", url.PathEscape(u))
+	//if can, _ := c.Data["CanLoginWorkWeixin"].(bool); can {
+	//	c.Data["workweixin_login_url"] = conf.URLFor(auth2Redirect, ":app", wecom.AppName, "url", url.PathEscape(u))
+	//}
+	//
+	//if can, _ := c.Data["CanLoginDingTalk"].(bool); can {
+	//	c.Data["dingtalk_login_url"] = conf.URLFor(auth2Redirect, ":app", dingtalk.AppName, "url", url.PathEscape(u))
+	//
+	//}
+	// maxkey
+	if can, _ := c.Data["CanLoginMaxKey"].(bool); can {
+		c.Data["maxkey_login_url"] = conf.URLFor(auth2Redirect, ":app", maxkey.AppName, "url", url.PathEscape(u))
 
 	}
 	return
@@ -222,6 +229,16 @@ func (c *AccountController) getAuth2Client() (auth2.Client, error) {
 		appSecret, _ := web.AppConfig.String("dingtalk_app_secret")
 		client = dingtalk.NewClient(appSecret, appKey)
 
+	case maxkey.AppName:
+		if can, _ := c.Data["CanLoginMaxKey"].(bool); !can {
+			return nil, errors.New("auth2.client.maxkey.disabled")
+		}
+
+		maxkeyEndpoint, _ := web.AppConfig.String("maxkey_endpoint")
+		maxkeyClientId, _ := web.AppConfig.String("maxkey_client_id")
+		maxkeyClientSecret, _ := web.AppConfig.String("maxkey_client_secret")
+		redirectUri, _ := web.AppConfig.String("redirect_uri")
+		client = maxkey.NewClient(maxkeyEndpoint, maxkeyClientId, maxkeyClientSecret, redirectUri)
 	default:
 		return nil, errors.New("auth2.client.notsupported")
 	}
@@ -260,6 +277,8 @@ func (c *AccountController) parseAuth2CallbackParam() (code, state string) {
 	case dingtalk.AppName:
 		code = c.GetString("authCode")
 		state = c.GetString("state")
+	case maxkey.AppName:
+		code = c.GetString("code")
 	}
 
 	logs.Debug("code: ", code)
