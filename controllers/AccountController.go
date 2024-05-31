@@ -422,14 +422,10 @@ func (c *AccountController) Auth2Callback() {
 	member, err := account.ExistedMember(userInfo.UserId)
 	if err != nil {
 		if err == orm.ErrNoRows {
-			if userInfo.Mobile == "" {
-				errMsg = "请到应用浏览器中登录，并授权获取敏感信息。"
-			} else {
-				jsonInfo, _ := json.Marshal(userInfo)
-				userInfoJson = string(jsonInfo)
-				errMsg = ""
-				c.SetSession(SessionUserInfoKey, userInfo)
-			}
+			jsonInfo, _ := json.Marshal(userInfo)
+			userInfoJson = string(jsonInfo)
+			errMsg = ""
+			c.SetSession(SessionUserInfoKey, userInfo)
 		} else {
 			logs.Error("Error: ", err)
 			errMsg = "登录错误: " + err.Error()
