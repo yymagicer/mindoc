@@ -171,14 +171,14 @@ func (m MaxkeyAccount) AddBind(o orm.Ormer, userInfo auth2.UserInfo, member *Mem
 		return nil
 	}
 
-	m.MemberId = member.MemberId
-	m.Maxkey_UserId = userInfo.UserId
+	tmpM.MemberId = member.MemberId
+	tmpM.Maxkey_UserId = userInfo.UserId
 
-	if c, err := o.QueryTable(m.TableNameWithPrefix()).Filter("member_id", m.MemberId).Count(); err == nil && c > 0 {
+	if c, err := o.QueryTable(tmpM.TableNameWithPrefix()).Filter("member_id", tmpM.MemberId).Count(); err == nil && c > 0 {
 		return errors.New("已绑定，不可重复绑定")
 	}
 
-	_, err = o.Insert(m)
+	_, err = o.Insert(tmpM)
 	if err != nil {
 		logs.Error("保存用户数据到数据时失败 =>", err)
 		return errors.New("用户信息绑定失败, 数据库错误")
