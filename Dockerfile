@@ -126,7 +126,7 @@ COPY --from=build /go/src/github.com/mindoc-org/mindoc/conf /mindoc/__default_as
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/static /mindoc/__default_assets__/static
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/views /mindoc/__default_assets__/views
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/uploads /mindoc/__default_assets__/uploads
-
+COPY --from=builder /go/bin/dlv /usr/local/bin/dlv
 # refer: https://docs.docker.com/engine/reference/builder/#volume
 VOLUME ["/mindoc/conf","/mindoc/static","/mindoc/views","/mindoc/uploads","/mindoc/runtime","/mindoc/database"]
 
