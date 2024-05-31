@@ -138,6 +138,7 @@ func RegisterModel() {
 		new(models.Comment),
 		new(models.WorkWeixinAccount),
 		new(models.DingTalkAccount),
+		new(models.MaxkeyAccount),
 	)
 	gob.Register(models.Blog{})
 	gob.Register(models.Document{})

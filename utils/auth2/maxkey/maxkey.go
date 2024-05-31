@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/beego/beego/v2/core/logs"
 	"github.com/mindoc-org/mindoc/utils/auth2"
 	"net/http"
 	"net/url"
@@ -76,7 +77,7 @@ type UserInfo struct {
 	// 文档: https://open.dingtalk.com/document/orgapp/dingtalk-retrieve-user-information
 	*BasicResponse
 
-	Id       string `json:"id"`
+	UserId   string `json:"userId"`
 	Username string `json:"username"`
 }
 
@@ -129,12 +130,14 @@ func (d *MaxkeyClient) ValidateCallback(state string) error {
 
 func (d *MaxkeyClient) getUserAccessToken(ctx context.Context, code string) (UserAccessToken, error) {
 	v := url.Values{}
-	v.Set("clientId", d.ClientId)
-	v.Set("clientSecret", d.ClientSecret)
+	v.Set("client_id", d.ClientId)
+	v.Set("client_secret", d.ClientSecret)
 	v.Set("code", code)
-	v.Set("grantType", "authorization_code")
+	v.Set("grant_type", "authorization_code")
+	v.Set("redirect_uri", d.RedirectUri)
 
 	endpoint := d.Endpoint + TokenUrl + "?" + v.Encode()
+	logs.Debug("get access_token url:", endpoint)
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
 	var token UserAccessToken
 	if err := auth2.Request(req, &token); err != nil {
@@ -156,7 +159,7 @@ func (d *MaxkeyClient) GetUserInfo(ctx context.Context, code string) (auth2.User
 	if err := auth2.Request(req, &user); err != nil {
 		return info, err
 	}
-	info.UserId = user.Id
+	info.UserId = user.UserId
 	info.Name = user.Username
 	return info, nil
 }

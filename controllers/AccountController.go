@@ -279,6 +279,7 @@ func (c *AccountController) parseAuth2CallbackParam() (code, state string) {
 		state = c.GetString("state")
 	case maxkey.AppName:
 		code = c.GetString("code")
+		state = c.GetString("state")
 	}
 
 	logs.Debug("code: ", code)
@@ -290,9 +291,10 @@ func (c *AccountController) getAuth2Account() (models.Auth2Account, error) {
 	switch c.Ctx.Input.Param(":app") {
 	case wecom.AppName:
 		return models.NewWorkWeixinAccount(), nil
-
 	case dingtalk.AppName:
 		return models.NewDingTalkAccount(), nil
+	case maxkey.AppName:
+		return models.NewMaxkeyAccount(), nil
 	}
 
 	return nil, errors.New("auth2.account.notsupported")

@@ -118,6 +118,75 @@ type DingTalkAccount struct {
 	LastLoginTime   time.Time `orm:"type(datetime);column(last_login_time);null" json:"last_login_time"`
 }
 
+func NewMaxkeyAccount() *MaxkeyAccount {
+	return &MaxkeyAccount{}
+}
+
+type MaxkeyAccount struct {
+	MemberId      int       `orm:"column(member_id);type(int);default(-1);index" json:"member_id"`
+	UserDbId      int       `orm:"pk;auto;unique;column(user_db_id)" json:"user_db_id"`
+	Maxkey_UserId string    `orm:"size(100);unique;column(maxkey_user_id)" json:"maxkey_user_id"`
+	CreateTime    time.Time `orm:"type(datetime);column(create_time);auto_now_add" json:"create_time"`
+	CreateAt      int       `orm:"type(int);column(create_at)" json:"create_at"`
+	LastLoginTime time.Time `orm:"type(datetime);column(last_login_time);null" json:"last_login_time"`
+}
+
+func (m *MaxkeyAccount) TableName() string {
+	return "maxkey_accounts"
+}
+func (m *MaxkeyAccount) TableNameWithPrefix() string {
+	return conf.GetDatabasePrefix() + m.TableName()
+}
+func (m MaxkeyAccount) ExistedMember(maxkey_user_id string) (*Member, error) {
+	o := orm.NewOrm()
+	account := NewMaxkeyAccount()
+	member := NewMember()
+	err := o.QueryTable(m.TableNameWithPrefix()).Filter("maxkey_user_id", maxkey_user_id).One(account)
+	if err != nil {
+		return member, err
+	}
+
+	member, err = member.Find(account.MemberId)
+	if err != nil {
+		return member, err
+	}
+
+	if member.Status != 0 {
+		return member, errors.New("receive_account_disabled")
+	}
+
+	return member, nil
+}
+
+func (m MaxkeyAccount) AddBind(o orm.Ormer, userInfo auth2.UserInfo, member *Member) error {
+	tmpM := NewMaxkeyAccount()
+	err := o.QueryTable(m.TableNameWithPrefix()).Filter("maxkey_user_id", userInfo.UserId).One(tmpM)
+	if err == nil {
+		tmpM.MemberId = member.MemberId
+		_, err = o.Update(tmpM)
+		if err != nil {
+			logs.Error("保存用户数据到数据时失败 =>", err)
+			return errors.New("用户信息绑定失败, 数据库错误")
+		}
+		return nil
+	}
+
+	m.MemberId = member.MemberId
+	m.Maxkey_UserId = userInfo.UserId
+
+	if c, err := o.QueryTable(m.TableNameWithPrefix()).Filter("member_id", m.MemberId).Count(); err == nil && c > 0 {
+		return errors.New("已绑定，不可重复绑定")
+	}
+
+	_, err = o.Insert(m)
+	if err != nil {
+		logs.Error("保存用户数据到数据时失败 =>", err)
+		return errors.New("用户信息绑定失败, 数据库错误")
+	}
+
+	return nil
+}
+
 // TableName 获取对应数据库表名.
 func (m *DingTalkAccount) TableName() string {
 	return "dingtalk_accounts"
