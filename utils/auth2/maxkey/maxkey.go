@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/beego/beego/v2/core/logs"
 	"github.com/mindoc-org/mindoc/utils/auth2"
 	"net/http"
 	"net/url"
@@ -137,7 +136,6 @@ func (d *MaxkeyClient) getUserAccessToken(ctx context.Context, code string) (Use
 	v.Set("redirect_uri", d.RedirectUri)
 
 	endpoint := d.Endpoint + TokenUrl + "?" + v.Encode()
-	logs.Debug("get access_token url:", endpoint)
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
 	var token UserAccessToken
 	if err := auth2.Request(req, &token); err != nil {

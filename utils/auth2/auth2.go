@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/beego/beego/v2/core/logs"
 	"io"
 	"net/http"
 	"time"
@@ -66,6 +67,7 @@ type IResponse interface {
 }
 
 func Request(req *http.Request, v IResponse) error {
+	logs.Debug("request url:", req.URL)
 	response, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
@@ -76,7 +78,7 @@ func Request(req *http.Request, v IResponse) error {
 	if err != nil {
 		return err
 	}
-
+	logs.Debug("response ", string(b))
 	if response.StatusCode != http.StatusOK {
 		return fmt.Errorf("status = %d, msg = %s", response.StatusCode, string(b))
 	}
