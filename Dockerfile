@@ -17,8 +17,7 @@ WORKDIR /go/src/github.com/mindoc-org/mindoc
 RUN go env
 RUN go mod tidy -v
 RUN go build -v -o mindoc_linux_amd64 -ldflags "-w -s -X 'main.VERSION=$TAG' -X 'main.BUILD_TIME=`date`' -X 'main.GO_VERSION=`go version`'"
-RUN rm -f conf/app.conf
-RUN cp conf/app.conf conf/app.conf
+
 # 清理不需要的文件
 RUN rm appveyor.yml docker-compose.yml Dockerfile .travis.yml .gitattributes .gitignore go.mod go.sum main.go README.md simsun.ttc start.sh conf/*.go
 RUN rm -rf cache commands controllers converter .git .github graphics mail models routers utils
