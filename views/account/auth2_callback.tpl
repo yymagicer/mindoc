@@ -140,7 +140,7 @@
                     });
                     return false;
                 },
-                cancel: function(index, layero){ 
+                cancel: function(index, layero){
                     // return false; // 不关闭
                     layer.close(index);
                     window.location.href = window.home_url;
@@ -194,13 +194,14 @@
         if (!!window.server_error_msg && window.server_error_msg.length > 0) {
             layer.msg(window.server_error_msg, {icon: 5, time: 3500});
         } else {
-            if (window.bind_existed === false) {
-                showBindAccount();
-            } else {
-                // alert(typeof window.bind_existed);
-                // alert('_' + window.bind_existed + '_');
-                window.location.href = window.home_url;
-            }
+            // if (window.bind_existed === false) {
+            //     showBindAccount();
+            // } else {
+            //     // alert(typeof window.bind_existed);
+            //     // alert('_' + window.bind_existed + '_');
+            //     window.location.href = window.home_url;
+            // }
+            window.location.href = window.home_url;
         }
     });
 </script>
