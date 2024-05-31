@@ -134,7 +134,7 @@ VOLUME ["/mindoc/conf","/mindoc/static","/mindoc/views","/mindoc/uploads","/mind
 # refer: https://docs.docker.com/engine/reference/builder/#expose
 EXPOSE 8181/tcp 2345
 
-RUN apt-get install -y go
+RUN apt-get install -y golang
 ENV ZONEINFO=/mindoc/lib/time/zoneinfo.zip
 RUN chmod +x /mindoc/start.sh
 
