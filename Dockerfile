@@ -45,18 +45,6 @@ SHELL ["/bin/bash", "-c"]
 
 WORKDIR /mindoc
 
-# 文件复制
-COPY --from=build /usr/share/fonts/win/simsun.ttc /usr/share/fonts/win/
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/mindoc_linux_amd64 /mindoc/
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/start.sh /mindoc/
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/LICENSE.md /mindoc/
-# 文件夹复制
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/lib /mindoc/lib
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/conf /mindoc/__default_assets__/conf
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/static /mindoc/__default_assets__/static
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/views /mindoc/__default_assets__/views
-COPY --from=build /go/src/github.com/mindoc-org/mindoc/uploads /mindoc/__default_assets__/uploads
-
 RUN chmod a+r /usr/share/fonts/win/simsun.ttc
 
 # 备份原有源
@@ -126,6 +114,18 @@ ENV QT_QPA_PLATFORM='offscreen'
 RUN ebook-convert --version
 # 清理calibre缓存
 RUN rm -rf /tmp/calibre-cache
+
+# 文件复制
+COPY --from=build /usr/share/fonts/win/simsun.ttc /usr/share/fonts/win/
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/mindoc_linux_amd64 /mindoc/
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/start.sh /mindoc/
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/LICENSE.md /mindoc/
+# 文件夹复制
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/lib /mindoc/lib
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/conf /mindoc/__default_assets__/conf
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/static /mindoc/__default_assets__/static
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/views /mindoc/__default_assets__/views
+COPY --from=build /go/src/github.com/mindoc-org/mindoc/uploads /mindoc/__default_assets__/uploads
 
 # refer: https://docs.docker.com/engine/reference/builder/#volume
 VOLUME ["/mindoc/conf","/mindoc/static","/mindoc/views","/mindoc/uploads","/mindoc/runtime","/mindoc/database"]
