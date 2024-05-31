@@ -124,12 +124,10 @@ RUN rm -rf /tmp/calibre-cache
 VOLUME ["/mindoc/conf","/mindoc/static","/mindoc/views","/mindoc/uploads","/mindoc/runtime","/mindoc/database"]
 
 # refer: https://docs.docker.com/engine/reference/builder/#expose
-EXPOSE 8181/tcp
+EXPOSE 8181/tcp 2345
 
 ENV ZONEINFO=/mindoc/lib/time/zoneinfo.zip
 RUN chmod +x /mindoc/start.sh
-
-RUN echo "192.168.166.118 maxkey.dev-nj.bigfintax.com" >> /etc/hosts
 
 ENTRYPOINT ["/bin/bash", "/mindoc/start.sh"]
 

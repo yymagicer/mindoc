@@ -18,6 +18,8 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0
 )
 
+require github.com/kr/pretty v0.2.1 // indirect
+
 require (
 	github.com/Azure/go-ntlmssp v0.0.0-20220621081337-cb9428e4ac1e // indirect
 	github.com/Unknwon/goconfig v1.0.0 // indirect

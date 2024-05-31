@@ -21,8 +21,10 @@ cp --no-clobber /mindoc/conf/app.conf.example /mindoc/conf/app.conf
 /mindoc/mindoc_linux_amd64 install
 
 # 运行
-/mindoc/mindoc_linux_amd64
+#/mindoc/mindoc_linux_amd64
+go install github.com/go-delve/delve/cmd/dlv@latest
 
+dlv debug /mindoc/mindoc_linux_amd64 --headless --listen=:2345 --api-version=2
 # # Debug Dockerfile
 # while [ 1 ]
 # do
