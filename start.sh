@@ -21,8 +21,7 @@ cp --no-clobber /mindoc/conf/app.conf.example /mindoc/conf/app.conf
 /mindoc/mindoc_linux_amd64 install
 
 # 运行
-#/mindoc/mindoc_linux_amd64
-dlv debug exec /mindoc/mindoc_linux_amd64 --headless --listen=:2345 --api-version=2 --log
+/mindoc/mindoc_linux_amd64
 # # Debug Dockerfile
 # while [ 1 ]
 # do

@@ -17,9 +17,6 @@ WORKDIR /go/src/github.com/mindoc-org/mindoc
 RUN go env
 RUN go mod tidy -v
 
-# 安装 Delve
-RUN go install github.com/go-delve/delve/cmd/dlv@latest
-
 RUN go build -v -o mindoc_linux_amd64 -ldflags "-w -s -X 'main.VERSION=$TAG' -X 'main.BUILD_TIME=`date`' -X 'main.GO_VERSION=`go version`'"
 
 # 清理不需要的文件
@@ -124,7 +121,6 @@ COPY --from=build /go/src/github.com/mindoc-org/mindoc/conf /mindoc/__default_as
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/static /mindoc/__default_assets__/static
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/views /mindoc/__default_assets__/views
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/uploads /mindoc/__default_assets__/uploads
-COPY --from=build /go/bin/dlv /usr/local/bin/dlv
 
 RUN chmod a+r /usr/share/fonts/win/simsun.ttc
 
@@ -132,9 +128,8 @@ RUN chmod a+r /usr/share/fonts/win/simsun.ttc
 VOLUME ["/mindoc/conf","/mindoc/static","/mindoc/views","/mindoc/uploads","/mindoc/runtime","/mindoc/database"]
 
 # refer: https://docs.docker.com/engine/reference/builder/#expose
-EXPOSE 8181/tcp 2345
+EXPOSE 8181/tcp
 
-RUN apt-get install -y golang
 ENV ZONEINFO=/mindoc/lib/time/zoneinfo.zip
 RUN chmod +x /mindoc/start.sh
 
