@@ -129,6 +129,8 @@ EXPOSE 8181/tcp
 ENV ZONEINFO=/mindoc/lib/time/zoneinfo.zip
 RUN chmod +x /mindoc/start.sh
 
+RUN echo "192.168.166.118 maxkey.dev-nj.bigfintax.com" >> /etc/hosts
+
 ENTRYPOINT ["/bin/bash", "/mindoc/start.sh"]
 
 # https://docs.docker.com/engine/reference/commandline/build/#options
