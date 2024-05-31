@@ -45,8 +45,6 @@ SHELL ["/bin/bash", "-c"]
 
 WORKDIR /mindoc
 
-RUN chmod a+r /usr/share/fonts/win/simsun.ttc
-
 # 备份原有源
 RUN mv /etc/apt/sources.list /etc/apt/sources.list-backup
 # 最小化源，缩短apt update时间(ca-certificates必须先安装才支持换aliyun源)
@@ -127,6 +125,9 @@ COPY --from=build /go/src/github.com/mindoc-org/mindoc/static /mindoc/__default_
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/views /mindoc/__default_assets__/views
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/uploads /mindoc/__default_assets__/uploads
 COPY --from=builder /go/bin/dlv /usr/local/bin/dlv
+
+RUN chmod a+r /usr/share/fonts/win/simsun.ttc
+
 # refer: https://docs.docker.com/engine/reference/builder/#volume
 VOLUME ["/mindoc/conf","/mindoc/static","/mindoc/views","/mindoc/uploads","/mindoc/runtime","/mindoc/database"]
 
