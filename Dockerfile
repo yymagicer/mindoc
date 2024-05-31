@@ -124,7 +124,7 @@ COPY --from=build /go/src/github.com/mindoc-org/mindoc/conf /mindoc/__default_as
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/static /mindoc/__default_assets__/static
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/views /mindoc/__default_assets__/views
 COPY --from=build /go/src/github.com/mindoc-org/mindoc/uploads /mindoc/__default_assets__/uploads
-COPY --from=builder /go/bin/dlv /usr/local/bin/dlv
+COPY --from=build /go/bin/dlv /usr/local/bin/dlv
 
 RUN chmod a+r /usr/share/fonts/win/simsun.ttc
 
