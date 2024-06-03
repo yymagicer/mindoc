@@ -81,7 +81,7 @@
             </div>
         </div>
     </div>
-    {{template "widgets/footer.tpl" .}}
+    <!--{{template "widgets/footer.tpl" .}}-->
 </div>
 <!-- Start Modal -->
 <div class="modal fade" id="upload-logo-panel" tabindex="-1" role="dialog" aria-labelledby="{{i18n .Lang "uc.change_avatar"}})" aria-hidden="true">

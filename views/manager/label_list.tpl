@@ -67,7 +67,7 @@
             </div>
         </div>
     </div>
-{{template "widgets/footer.tpl" .}}
+<!--{{template "widgets/footer.tpl" .}}-->
 </div>
 
 <script src="{{cdnjs "/static/jquery/1.12.4/jquery.min.js"}}"></script>

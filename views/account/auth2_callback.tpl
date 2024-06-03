@@ -80,7 +80,7 @@
         </div>
     </script>
 </div>
-{{template "widgets/footer.tpl" .}}
+<!--{{template "widgets/footer.tpl" .}}-->
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{{cdnjs "/static/bootstrap/js/bootstrap.min.js"}}" type="text/javascript"></script>
 <script src="{{cdnjs "/static/layer/layer.js"}}" type="text/javascript"></script>
